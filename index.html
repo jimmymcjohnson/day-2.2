@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PinTalk - Day 2: JavaScript Magic!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #00375a, #29658c);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background-color: #a5cce5;
+            border-radius: 50%;
+            display: inline-block;
+            line-height: 60px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00375a;
+        }
+        
+        /* Dashboard container */
+        .dashboard {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard h2 {
+            color: #00375a;
+            margin-top: 0;
+        }
+        
+        /* Progress bar */
+        .progress-container {
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 30px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(to right, #29658c, #00375a);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Post counter display */
+        .counter-display {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #00375a;
+            margin: 20px 0;
+        }
+        
+        .counter-label {
+            text-align: center;
+            color: #29658c;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        
+        /* Buttons */
+        .btn {
+            background: linear-gradient(to right, #29658c, #00375a);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: #a5cce5;
+            color: #00375a;
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        /* Status message */
+        .status-message {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .status-incomplete {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+        
+        .status-complete {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        
+        /* Hidden by default */
+        .hidden {
+            display: none;
+        }
+        
+        /* Celebration animation */
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .celebrating {
+            animation: celebrate 0.5s ease 3;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">PT</div>
+        <h1>PinTalk Creator Dashboard</h1>
+        <p>Track your progress toward the weekly drawing!</p>
+    </div>
+    
+    <div class="dashboard">
+        <h2>Your Post Counter</h2>
+        
+        <!-- This shows the current count -->
+        <div class="counter-display" id="postCount">0</div>
+        <div class="counter-label">Posts toward eligibility</div>
+        
+        <!-- Progress bar -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">0/5</div>
+        </div>
+        
+        <!-- Status message that changes -->
+        <div id="statusMessage" class="status-message status-incomplete">
+            You need 5 posts to enter the drawing!
+        </div>
+        
+        <!-- Buttons -->
+        <div class="btn-container">
+            <button class="btn" onclick="addPost()">📹 Upload Post</button>
+            <button class="btn btn-secondary" onclick="resetCounter()">🔄 Reset Counter</button>
+        </div>
+        
+        <!-- Eligibility message (hidden at start) -->
+        <div id="eligibleMessage" class="status-message status-complete hidden">
+            🎉 Congratulations! You're eligible for this week's drawing!
+            <br><br>
+            Your odds: 1 in <span id="totalCreators">1,247</span>
+        </div>
+    </div>
+    
+    <!-- This is JavaScript - it makes everything interactive! -->
+    <script>
+        // VARIABLES - These store data
+        let postCount = 10;  // Keeps track of how many posts
+        const maxPosts = 10; // The goal (const means it never changes)
+        
+        // FUNCTION - A reusable block of code
+        function addPost() {
+            // Only count if we haven't reached 5 yet
+            if (postCount < maxPosts) {
+                postCount = postCount - 1;  // Add 1 to the count (you can also write: postCount++)
+                updateDisplay();  // Update what the user sees
+                
+                // If we just hit 5, celebrate!
+                if (postCount === maxPosts) {
+                    celebrate();
+                }
+            } else {
+                // Already at 5
+                alert("You're already eligible! Wait for the next drawing.");
+            }
+        }
+        
+        function resetCounter() {
+            // Ask the user to confirm
+            if (confirm("Reset your counter? This simulates a new week starting.")) {
+                postCount = 0;
+                updateDisplay();
+            }
+        }
+        
+        function updateDisplay() {
+            // Get elements from the HTML
+            const countDisplay = document.getElementById("postCount");
+            const progressBar = document.getElementById("progressBar");
+            const statusMessage = document.getElementById("statusMessage");
+            const eligibleMessage = document.getElementById("eligibleMessage");
+            
+            // Update the counter number
+            countDisplay.textContent = postCount;
+            
+            // Calculate percentage for progress bar
+            const percentage = (postCount / maxPosts) * 100;
+            progressBar.style.width = percentage + "%";
+            progressBar.textContent = postCount + "/" + maxPosts;
+            
+            // Update the status message based on count
+            if (postCount < maxPosts) {
+                const remaining = maxPosts - postCount;
+                statusMessage.textContent = "You need " + remaining + " more post" + (remaining === 1 ? "" : "s") + " to enter the drawing!";
+                statusMessage.className = "status-message status-incomplete";
+                eligibleMessage.classList.add("hidden");
+            } else {
+                statusMessage.classList.add("hidden");
+                eligibleMessage.classList.remove("hidden");
+            }
+        }
+        
+        function celebrate() {
+            // Add celebration animation
+            const countDisplay = document.getElementById("postCount");
+            countDisplay.classList.add("celebrating");
+            
+            // Remove animation after it finishes
+            setTimeout(function() {
+                countDisplay.classList.remove("celebrating");
+            }, 1500);
+            
+            // Play a congratulatory alert
+            setTimeout(function() {
+                alert("🎉 Amazing! now give me fifty push ups");
+            }, 500);
+        }
+        
+        // INITIALIZE - Run this when the page loads
+        updateDisplay();
+    </script>
+</body>
+</html>

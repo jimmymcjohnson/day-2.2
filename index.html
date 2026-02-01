@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PinTalk - Day 2: JavaScript Magic!</title>
+    <title>PinTalk Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -192,14 +192,14 @@
     <!-- This is JavaScript - it makes everything interactive! -->
     <script>
         // VARIABLES - These store data
-        let postCount = 10;  // Keeps track of how many posts
+        let postCount = 0;  // Keeps track of how many posts
         const maxPosts = 10; // The goal (const means it never changes)
         
         // FUNCTION - A reusable block of code
         function addPost() {
             // Only count if we haven't reached 5 yet
             if (postCount < maxPosts) {
-                postCount = postCount - 1;  // Add 1 to the count (you can also write: postCount++)
+                postCount = postCount + 1;  // Add 1 to the count (you can also write: postCount++)
                 updateDisplay();  // Update what the user sees
                 
                 // If we just hit 5, celebrate!
